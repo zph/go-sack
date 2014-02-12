@@ -1,0 +1,13 @@
+app/assets/javascripts/common/header.js:1:define(['jquery', 'third-party/storage-polyfill', 'login', 'jquery-autotagging', 'tracker', 'common/ag-utils', 'common/survey', 'common/warehouse', 'common/faceoff', 'zutron'],
+app/assets/javascripts/common/warehouse.coffee:1:define ['jquery-autotagging', 'common/ag-utils'], (WH, utils) ->
+app/assets/javascripts/common/warehouse.coffee:8:    # Override the firePageViewTag function from jquery-autotagging
+app/assets/javascripts/pages/listing-details.js:364:    function setFirstClassForIpadAutotagging() {
+app/assets/javascripts/pages/listing-details.js:386:      setFirstClassForIpadAutotagging();
+app/assets/javascripts/require.config.coffee:29:    "jquery-autotagging": "vendor/jquery-autotagging/jquery.autotagging"
+app/views/aux/login.slim:2:  require(['jquery-autotagging', 'jquery'], function (WH, $) {
+bower.json:15:    "jquery-autotagging"        : "git@github.com:primedia/jquery-autotagging.git#v1.0.4",
+public/javascripts/common/header.js:1:define(['jquery', 'third-party/storage-polyfill', 'login', 'jquery-autotagging', 'tracker', 'common/ag-utils', 'common/survey', 'common/warehouse', 'common/faceoff', 'zutron'],
+public/javascripts/common/warehouse.js:2:define(['jquery-autotagging', 'common/ag-utils'], function(WH, utils) {
+public/javascripts/pages/listing-details.js:364:    function setFirstClassForIpadAutotagging() {
+public/javascripts/pages/listing-details.js:386:      setFirstClassForIpadAutotagging();
+public/javascripts/require.config.js:28:    "jquery-autotagging": "vendor/jquery-autotagging/jquery.autotagging",
