@@ -19,7 +19,7 @@ func Execute() {
 	app := cli.NewApp()
 	app.Name = "Sack"
 	app.Usage = "sack [searchterm] [optional directory]"
-	app.Version = "0.2.2"
+	app.Version = "0.2.3"
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{"edit, e", "edit a given shortcut"},
 		cli.BoolFlag{"search, s", "search-ack/ag it"},
