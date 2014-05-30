@@ -1,74 +1,92 @@
 package main
 
-// Taken straight from https://github.com/jmhodges/jsonpp/blob/master/jsonpp.go
 import (
-  // "bufio"
-  // "bytes"
-  "flag"
-  "fmt"
-  // "io"
-  "os"
-  "io/ioutil"
-  "strings"
+    "fmt"
+    "os"
+    "os/exec"
+    "io/ioutil"
+    "path"
+    "strings"
+    "flag"
+    "strconv"
 )
 
-var newline = []uint8("\n")
-var help = flag.Bool("help", false, "help")
+/*
+TODO: 
+- add commandline args
+- convert ag's output to sack_shortcuts format
+- add -e arg for exec'ing vim w/ appropriate sack_shortcuts format args
+*/
+
+var home string               = os.Getenv("HOME")
+var searchPath string         = path.Join(home, ".zsh.d/")
+var flagEdit = flag.Bool("edit", false, "zoom to edit this file")
+
+const agCmd string            = "ag"
+const flags string            = "-i"
+const searchTerm string       = "ruby"
+const shortcutFilename string = ".sack_shortcuts"
+
+func check(e error){
+    if e != nil {
+        panic(e)
+    }
+}
+
+func content() []string {
+    filePath   := path.Join(home, shortcutFilename)
+    dat, err   := ioutil.ReadFile(filePath)
+    check(err)
+    lines      := strings.Split(string(dat), "\n")
+    return lines
+}
+
+func splitLine(s string) []string{
+    arr := strings.Split(s, ":")
+    return arr
+}
+
+func executeCmd() []string {
+    cmd, err := exec.Command(agCmd, flags, searchTerm, searchPath).Output()
+    check(err)
+    lines := strings.Split(string(cmd), "\n")
+    return lines
+}
+
+func search() {
+    lines     := executeCmd()
+    // firstLine := lines[0]
+    // lineArr   := splitLine(firstLine)
+    // fmt.Println(strings.Join(lineArr, "---"))
+    fmt.Println(strings.Join(lines, "\n"))
+}
+
+func edit(s string){
+    lines     := content()
+    fmt.Println("Index entry: ", s)
+
+    ind, err := strconv.Atoi(s)
+    check(err)
+
+    selectedLine := lines[ind]
+    lineArr   := strings.Split(selectedLine, " ")
+    fmt.Println(strings.Join(lineArr, "---"))
+}
+
+func setup() []string {
+    flag.Parse()
+    var args []string = flag.Args()
+    return args
+}
+
+func checkState() { }
 
 func main() {
-  flag.Parse()
-  if *help {
-    cmd := os.Args[0]
-
-    // if cmd[0:2] == "./" {
-    //   cmd = cmd[2:]
-    // }
-    fmt.Fprintf(os.Stderr, "Usage: "+cmd+" [file]"+"\n")
-    fmt.Fprintf(os.Stderr, "   or: $COMMAND | "+cmd+"\n")
-    os.Exit(0)
-  }
-
-  // filename := os.Getenv("SACK_SHORTCUTS_FILE")
-  // if filename == "" {
-  //   filename = "~/.sack_shortcuts"
-  // }
-
-  var exitStatus = 0
-  filename := os.Args[1]
-
-  // file, err := os.OpenFile(filename, os.O_RDONLY, 0)
-
-  content, err := ioutil.ReadFile(filename)
-
-  if err != nil {
-    exitStatus = 1
-      //Do something
-  }
-
-  lines := strings.Split(string(content), "\n")
-
-  // p := []string{"", "", ""}
-  l := strings.Split(lines[0], ":")
-
-  type Line struct {
-    filename string
-    line_number string
-    excerpt string
-  }
-
-  line := Line{l[0], l[1], l[2]}
-  fmt.Println(line.excerpt)
-
-      // status := processFile(file, indent)
-      // if status > 0 {
-      //   exitStatus = status
-      // }
-    // }
-  // } else {
-    // status := processFile(os.Stdin, indent)
-    // if status > 0 {
-      // exitStatus = status
-    // }
-  // }
-  os.Exit(exitStatus)
+    checkState()
+    args := setup()
+    if *flagEdit {
+        edit(args[0])
+    } else {
+        search()
+    }
 }
