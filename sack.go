@@ -21,13 +21,10 @@ TODO:
 */
 
 var home string = os.Getenv("HOME")
-var searchPath string = path.Join(home, ".zsh.d/")
-
-// var flagEdit = flag.Bool("edit", false, "zoom to edit this file")
 
 const agCmd string = "ag"
 const flags string = "-i"
-const searchTerm string = "ruby"
+
 const shortcutFilename string = ".sack_shortcuts"
 
 func check(e error) {
@@ -49,27 +46,34 @@ func splitLine(s string) []string {
 	return arr
 }
 
-func executeCmd() []string {
+func executeCmd(searchTerm string, searchPath string) []string {
 	agBin, err := exec.LookPath(agCmd)
 
+	fmt.Println("PPath: ", searchPath)
 	cmd, err := exec.Command(agBin, flags, searchTerm, searchPath).Output()
 	check(err)
 	lines := strings.Split(string(cmd), "\n")
+	fmt.Println(lines)
 	return lines
 }
 
-func search() {
-	lines := executeCmd()
-	// firstLine := lines[0]
-	// lineArr   := splitLine(firstLine)
-	// fmt.Println(strings.Join(lineArr, "---"))
+func search(c *cli.Context) {
+	searchTerm := c.Args()[0]
+	searchPath := c.Args()[1]
+	// TODO: allow PWD as default value for searchPath
+	//     searchPath, _ = os.Getwd()
+
+	fmt.Println("Term ", searchTerm, " Path: ", searchPath)
+	lines := executeCmd(searchTerm, searchPath)
 	fmt.Println(strings.Join(lines, "\n"))
+	// TODO: transform to sack_shortcuts format
+	// TODO: write to ~/.sack_shortcuts
 }
 
-func edit(s string) {
+func edit(c *cli.Context) {
 	lines := content()
 
-	ind, err := strconv.Atoi(s)
+	ind, err := strconv.Atoi(c.Args()[0])
 	check(err)
 
 	selectedLine := lines[ind]
@@ -82,7 +86,9 @@ func edit(s string) {
 	plusCmd := fmt.Sprint("+", lineArr[0])
 	plussCmd := []string{"vim", lineArr[1], plusCmd}
 
-	fmt.Println("Whole cmd: ", plussCmd, " Index: ", s)
+	if c.Bool("debug") {
+		fmt.Println("Whole cmd: ", plussCmd, " Index: ", c.Args()[0])
+	}
 
 	if true {
 		execErr := syscall.Exec(vimBin, plussCmd, env)
@@ -113,14 +119,19 @@ func main() {
 		cli.BoolFlag{"edit, e", "edit a given shortcut"},
 		cli.BoolFlag{"search, s", "search-ack/ag it"},
 		cli.BoolFlag{"print, p", "display existing shortcuts"},
-		cli.BoolFlag{"verbose, v", "moar text"},
+		cli.BoolFlag{"debug, d", "show all the texts"},
 	}
 
 	app.Action = func(c *cli.Context) {
+
+		if c.Bool("debug") {
+			fmt.Printf("Context %#v\n", c)
+		}
+
 		if c.Bool("edit") {
-			edit(c.Args()[0])
+			edit(c)
 		} else if c.Bool("search") {
-			search()
+			search(c)
 		} else if c.Bool("print") || true {
 			display()
 		}
