@@ -3,12 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/codegangsta/cli"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
 	"strconv"
 	"strings"
+	"syscall"
 )
 
 /*
@@ -20,7 +22,8 @@ TODO:
 
 var home string = os.Getenv("HOME")
 var searchPath string = path.Join(home, ".zsh.d/")
-var flagEdit = flag.Bool("edit", false, "zoom to edit this file")
+
+// var flagEdit = flag.Bool("edit", false, "zoom to edit this file")
 
 const agCmd string = "ag"
 const flags string = "-i"
@@ -47,7 +50,9 @@ func splitLine(s string) []string {
 }
 
 func executeCmd() []string {
-	cmd, err := exec.Command(agCmd, flags, searchTerm, searchPath).Output()
+	agBin, err := exec.LookPath(agCmd)
+
+	cmd, err := exec.Command(agBin, flags, searchTerm, searchPath).Output()
 	check(err)
 	lines := strings.Split(string(cmd), "\n")
 	return lines
@@ -63,15 +68,29 @@ func search() {
 
 func edit(s string) {
 	lines := content()
-	fmt.Println("Index entry: ", s)
 
 	ind, err := strconv.Atoi(s)
 	check(err)
 
 	selectedLine := lines[ind]
 	lineArr := strings.Split(selectedLine, " ")
-	fmt.Println(strings.Join(lineArr, "---"))
+
+	env := os.Environ()
+	vimBin, err := exec.LookPath("vim")
+	check(err)
+
+	plusCmd := fmt.Sprint("+", lineArr[0])
+	plussCmd := []string{"vim", lineArr[1], plusCmd}
+	fmt.Println("Index entry: ", s)
+	fmt.Println("Whole cmd: ", plussCmd)
+
+	if true {
+		execErr := syscall.Exec(vimBin, plussCmd, env)
+		check(execErr)
+	}
 }
+
+func display() {}
 
 func setup() []string {
 	flag.Parse()
@@ -83,10 +102,22 @@ func checkState() {}
 
 func main() {
 	checkState()
-	args := setup()
-	if *flagEdit {
-		edit(args[0])
-	} else {
-		search()
+
+	app := cli.NewApp()
+	app.Name = "Sack"
+	app.Usage = "sack [searchterm] [optional directory]"
+	app.Version = "0.1.0"
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{"edit, e", "edit a given shortcut"},
+		cli.BoolFlag{"search, s", "search-ack/ag it"},
 	}
+
+	app.Action = func(c *cli.Context) {
+		if c.Bool("edit") {
+			edit(c.Args()[0])
+		} else if c.Bool("search") || true {
+			search()
+		}
+	}
+	app.Run(os.Args)
 }
