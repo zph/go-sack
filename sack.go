@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/codegangsta/cli"
+	"github.com/wsxiaoys/terminal/color"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -39,7 +40,7 @@ func content() []string {
 	dat, err := ioutil.ReadFile(filePath)
 	check(err)
 	lines := strings.Split(string(dat), "\n")
-	return lines
+	return lines[0 : len(lines)-1]
 }
 
 func splitLine(s string) []string {
@@ -49,11 +50,13 @@ func splitLine(s string) []string {
 
 func display() {
 	lines := content()
-	fmt.Println(len(lines))
-	length := len(lines) - 1
 
-	for i := 0; i < length; i++ {
-		s := fmt.Sprint("[", i, "]", "   ", lines[i])
+	// Header
+	color.Printf("@r[%2s]@{|} @b%5s@{|}  @g%s@{|}\n", "IDX", "Line", "Path")
+
+	for i, line := range lines {
+		li := strings.Split(line, " ")
+		s := color.Sprintf("@r[%2d]@{|} @b%5s@{|}  @g%s@{|}", i, li[0], li[1])
 		fmt.Println(s)
 	}
 }
@@ -116,7 +119,9 @@ func search(c *cli.Context) {
 	check(err)
 	defer f.Close()
 
-	for _, line := range lines {
+	color.Printf("@r[%2s]@{|} @b%5s@{|}  @g%s@{|}\n", "IDX", "Line", "Path")
+
+	for i, line := range lines {
 
 		if line == "" {
 			break
@@ -124,8 +129,10 @@ func search(c *cli.Context) {
 
 		lp := splitLine(line)
 		l := agLine{file: lp[0], line: lp[1], content: lp[2]}
+		s := color.Sprintf("@r[%2d]@{|} @b%5s@{|}  @g%s@{|} %s", i, l.line, l.file, l.content)
+		// TODO: highlight search term using case insensitive regex
+		fmt.Println(s)
 		o := fmt.Sprint(l.line, " ", l.file, " ", l.content, "\n")
-		fmt.Print(o)
 
 		w := bufio.NewWriter(f)
 		_, err := w.WriteString(o)
