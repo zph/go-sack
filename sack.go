@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "bufio"
+	"bufio"
 	"fmt"
 	"github.com/codegangsta/cli"
 	"io/ioutil"
@@ -15,9 +15,10 @@ import (
 
 /*
 TODO:
-- add commandline args
-- convert ag's output to sack_shortcuts format
-- add -e arg for exec'ing vim w/ appropriate sack_shortcuts format args
+- Add ability to specify alternate ag flags
+- Make it use current dir for search if os.Args()[1] is absent
+- Add term printing colors
+- Improve columnar layout of printed text
 */
 
 var home string = os.Getenv("HOME")
@@ -46,29 +47,18 @@ func splitLine(s string) []string {
 	return arr
 }
 
-func executeCmd(searchTerm string, searchPath string) []string {
-	agBin, err := exec.LookPath(agCmd)
+func display() {
+	lines := content()
+	fmt.Println(len(lines))
+	length := len(lines) - 1
 
-	fmt.Println("PPath: ", searchPath)
-	cmd, err := exec.Command(agBin, flags, searchTerm, searchPath).Output()
-	check(err)
-	lines := strings.Split(string(cmd), "\n")
-	fmt.Println(lines)
-	return lines
+	for i := 0; i < length; i++ {
+		s := fmt.Sprint("[", i, "]", "   ", lines[i])
+		fmt.Println(s)
+	}
 }
 
-func search(c *cli.Context) {
-	searchTerm := c.Args()[0]
-	searchPath := c.Args()[1]
-	// TODO: allow PWD as default value for searchPath
-	//     searchPath, _ = os.Getwd()
-
-	fmt.Println("Term ", searchTerm, " Path: ", searchPath)
-	lines := executeCmd(searchTerm, searchPath)
-	fmt.Println(strings.Join(lines, "\n"))
-	// TODO: transform to sack_shortcuts format
-	// TODO: write to ~/.sack_shortcuts
-}
+func checkState() {}
 
 func edit(c *cli.Context) {
 	lines := content()
@@ -96,17 +86,53 @@ func edit(c *cli.Context) {
 	}
 }
 
-func display() {
-	lines := content()
-	fmt.Println(len(lines))
-	length := len(lines) - 1
+func executeCmd(searchTerm string, searchPath string) []string {
+	agBin, err := exec.LookPath(agCmd)
 
-	for i := 0; i < length; i++ {
-		fmt.Println("[", i, "]", lines[i])
-	}
+	fmt.Println("PPath: ", searchPath)
+	cmd, err := exec.Command(agBin, flags, searchTerm, searchPath).Output()
+	check(err)
+	lines := strings.Split(string(cmd), "\n")
+	return lines
 }
 
-func checkState() {}
+type agLine struct {
+	file    string
+	line    string
+	content string
+}
+
+func search(c *cli.Context) {
+	searchTerm := c.Args()[0]
+	searchPath := c.Args()[1]
+	// TODO: allow PWD as default value for searchPath
+	//     searchPath, _ = os.Getwd()
+
+	lines := executeCmd(searchTerm, searchPath)
+	fmt.Println("Lines len ", len(lines))
+
+	filePath := path.Join(home, shortcutFilename)
+	f, err := os.Create(filePath)
+	check(err)
+	defer f.Close()
+
+	for _, line := range lines {
+
+		if line == "" {
+			break
+		}
+
+		lp := splitLine(line)
+		l := agLine{file: lp[0], line: lp[1], content: lp[2]}
+		o := fmt.Sprint(l.line, " ", l.file, " ", l.content, "\n")
+		fmt.Print(o)
+
+		w := bufio.NewWriter(f)
+		_, err := w.WriteString(o)
+		check(err)
+		w.Flush()
+	}
+}
 
 func main() {
 	checkState()
