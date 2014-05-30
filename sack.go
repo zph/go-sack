@@ -1,7 +1,7 @@
 package main
 
 import (
-	"flag"
+	// "bufio"
 	"fmt"
 	"github.com/codegangsta/cli"
 	"io/ioutil"
@@ -81,8 +81,8 @@ func edit(s string) {
 
 	plusCmd := fmt.Sprint("+", lineArr[0])
 	plussCmd := []string{"vim", lineArr[1], plusCmd}
-	fmt.Println("Index entry: ", s)
-	fmt.Println("Whole cmd: ", plussCmd)
+
+	fmt.Println("Whole cmd: ", plussCmd, " Index: ", s)
 
 	if true {
 		execErr := syscall.Exec(vimBin, plussCmd, env)
@@ -90,12 +90,14 @@ func edit(s string) {
 	}
 }
 
-func display() {}
+func display() {
+	lines := content()
+	fmt.Println(len(lines))
+	length := len(lines) - 1
 
-func setup() []string {
-	flag.Parse()
-	var args []string = flag.Args()
-	return args
+	for i := 0; i < length; i++ {
+		fmt.Println("[", i, "]", lines[i])
+	}
 }
 
 func checkState() {}
@@ -110,13 +112,17 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{"edit, e", "edit a given shortcut"},
 		cli.BoolFlag{"search, s", "search-ack/ag it"},
+		cli.BoolFlag{"print, p", "display existing shortcuts"},
+		cli.BoolFlag{"verbose, v", "moar text"},
 	}
 
 	app.Action = func(c *cli.Context) {
 		if c.Bool("edit") {
 			edit(c.Args()[0])
-		} else if c.Bool("search") || true {
+		} else if c.Bool("search") {
 			search()
+		} else if c.Bool("print") || true {
+			display()
 		}
 	}
 	app.Run(os.Args)
