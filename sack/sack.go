@@ -1,51 +1,47 @@
-package main
+package sack
 
 import (
-	"bufio"
-	"fmt"
-	"github.com/codegangsta/cli"
 	"github.com/wsxiaoys/terminal/color"
-	"io/ioutil"
-	"os"
+	"bufio"
 	"os/exec"
 	"path"
 	"strconv"
 	"strings"
 	"syscall"
+	"fmt"
+	"github.com/codegangsta/cli"
+	"os"
 )
 
-/*
-TODO:
-- Add ability to specify alternate ag flags
-- Make it use current dir for search if os.Args()[1] is absent
-- Add term printing colors
-- Improve columnar layout of printed text
-*/
+func Execute() {
+	checkState()
 
-var home string = os.Getenv("HOME")
-
-const agCmd string = "ag"
-const flags string = "-i"
-
-const shortcutFilename string = ".sack_shortcuts"
-
-func check(e error) {
-	if e != nil {
-		panic(e)
+	app := cli.NewApp()
+	app.Name = "Sack"
+	app.Usage = "sack [searchterm] [optional directory]"
+	app.Version = "0.2.2"
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{"edit, e", "edit a given shortcut"},
+		cli.BoolFlag{"search, s", "search-ack/ag it"},
+		cli.BoolFlag{"print, p", "display existing shortcuts"},
+		cli.BoolFlag{"debug, d", "show all the texts"},
 	}
-}
 
-func content() []string {
-	filePath := path.Join(home, shortcutFilename)
-	dat, err := ioutil.ReadFile(filePath)
-	check(err)
-	lines := strings.Split(string(dat), "\n")
-	return lines[0 : len(lines)-1]
-}
+	app.Action = func(c *cli.Context) {
 
-func splitLine(s string) []string {
-	arr := strings.Split(s, ":")
-	return arr
+		if c.Bool("debug") {
+			fmt.Printf("Context %#v\n", c)
+		}
+
+		if c.Bool("edit") {
+			edit(c)
+		} else if c.Bool("search") {
+			search(c)
+		} else if c.Bool("print") || true {
+			display()
+		}
+	}
+	app.Run(os.Args)
 }
 
 func display() {
@@ -60,8 +56,6 @@ func display() {
 		fmt.Println(s)
 	}
 }
-
-func checkState() {}
 
 func edit(c *cli.Context) {
 	lines := content()
@@ -139,35 +133,4 @@ func search(c *cli.Context) {
 		check(err)
 		w.Flush()
 	}
-}
-
-func main() {
-	checkState()
-
-	app := cli.NewApp()
-	app.Name = "Sack"
-	app.Usage = "sack [searchterm] [optional directory]"
-	app.Version = "0.2.2"
-	app.Flags = []cli.Flag{
-		cli.BoolFlag{"edit, e", "edit a given shortcut"},
-		cli.BoolFlag{"search, s", "search-ack/ag it"},
-		cli.BoolFlag{"print, p", "display existing shortcuts"},
-		cli.BoolFlag{"debug, d", "show all the texts"},
-	}
-
-	app.Action = func(c *cli.Context) {
-
-		if c.Bool("debug") {
-			fmt.Printf("Context %#v\n", c)
-		}
-
-		if c.Bool("edit") {
-			edit(c)
-		} else if c.Bool("search") {
-			search(c)
-		} else if c.Bool("print") || true {
-			display()
-		}
-	}
-	app.Run(os.Args)
 }

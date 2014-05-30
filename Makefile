@@ -1,17 +1,17 @@
 search:
-	go run sack.go -s ruby ${HOME}/.zsh.d/
+	go run main.go -s ruby ${HOME}/.zsh.d/
 
 edit:
-	go run sack.go -e 0
+	go run main.go -e 0
 
 print:
-	go run sack.go -p
+	go run main.go -p
 
 lint:
 	./bin/go-lint
 
 build:
-	go build sack.go
+	go build main.go sack
 
 version:
 	./bin/bump_version
