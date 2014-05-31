@@ -1,23 +1,23 @@
 package sack
 
 import (
-    "fmt"
+	"fmt"
 	"github.com/codegangsta/cli"
 )
 
 func shellInit(c *cli.Context) {
-    sh := `
+	sh := `
     sack=$(which sack)
 
     alias S="${sack} -s"
     alias F="${sack} -e"
     `
 
-    fmt.Println(sh)
+	fmt.Println(sh)
 }
 
-func shellEval(c * cli.Context){
-    sh := "eval \"$(sack init)\""
-    fmt.Println(sh)
+func shellEval(c *cli.Context) {
+	sh := "eval \"$(sack init)\""
+	fmt.Println(sh)
 
 }

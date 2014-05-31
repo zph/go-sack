@@ -20,38 +20,38 @@ func Execute() {
 		cli.BoolFlag{"debug, d", "show all the texts"},
 	}
 
-    app.Commands = []cli.Command{
-        {
-            Name:      "init",
-            Usage:     "shell init script",
-            Action: func(c *cli.Context) {
-                shellInit(c)
-            },
-        },
-        {
-            Name:      "eval",
-            Usage:     "shell eval command to insert into .{zsh,bash}rc",
-            Action: func(c *cli.Context) {
-                shellEval(c)
-            },
-        },
-    }
+	app.Commands = []cli.Command{
+		{
+			Name:  "init",
+			Usage: "shell init script",
+			Action: func(c *cli.Context) {
+				shellInit(c)
+			},
+		},
+		{
+			Name:  "eval",
+			Usage: "shell eval command to insert into .{zsh,bash}rc",
+			Action: func(c *cli.Context) {
+				shellEval(c)
+			},
+		},
+	}
 	app.Action = func(c *cli.Context) {
 
 		if c.Bool("debug") {
 			fmt.Printf("Context %#v\n", c)
 		}
 
-        switch true { 
-        case c.Bool("edit"):
+		switch true {
+		case c.Bool("edit"):
 			edit(c)
-        case c.Bool("search"):
-            search(c)
-        case c.Bool("print"):
-            display()
-        default:
-            search(c)
-        }
+		case c.Bool("search"):
+			search(c)
+		case c.Bool("print"):
+			display()
+		default:
+			search(c)
+		}
 	}
 
 	app.Run(os.Args)
