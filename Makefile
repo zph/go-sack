@@ -1,14 +1,21 @@
-search:
-	go run main.go -s ruby ${HOME}/.zsh.d/
+search: pkg/sack
+	./pkg/sack -s ruby ${HOME}/.zsh.d/
 
-edit:
-	go run main.go -e 0
+edit: pkg/sack
+	./pkg/sack -e 0
 
-print:
-	go run main.go -p
+print: pkg/sack
+	./pkg/sack -p
 
 lint:
 	./bin/go-lint
 
-build:
+build: clean
 	go build -o pkg/sack main.go
+
+clean:
+	rm -f pkg/*
+
+install: clean build
+	cp pkg/sack ~/bin/sack
+

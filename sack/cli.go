@@ -28,6 +28,13 @@ func Execute() {
                 shellInit(c)
             },
         },
+        {
+            Name:      "eval",
+            Usage:     "shell eval command to insert into .{zsh,bash}rc",
+            Action: func(c *cli.Context) {
+                shellEval(c)
+            },
+        },
     }
 	app.Action = func(c *cli.Context) {
 

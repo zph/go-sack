@@ -7,8 +7,6 @@ import (
 
 func shellInit(c *cli.Context) {
     sh := `
-    set -e
-
     sack=$(which sack)
 
     alias S="${sack} -s"
@@ -18,3 +16,8 @@ func shellInit(c *cli.Context) {
     fmt.Println(sh)
 }
 
+func shellEval(c * cli.Context){
+    sh := "eval \"$(sack init)\""
+    fmt.Println(sh)
+
+}
