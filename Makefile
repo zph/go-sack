@@ -12,6 +12,3 @@ lint:
 
 build:
 	go build main.go sack
-
-version:
-	./bin/bump_version

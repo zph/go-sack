@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file="sack/sack.go"
+file="sack/version.go"
 
 curr=$(egrep -o '\d+\.\d+\.\d+' ${file})
-sed -i'' -e "s/${curr}/$VERSION/" ${file}
+sed -i'' -e "s/${curr}/$1/" ${file}
