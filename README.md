@@ -2,6 +2,12 @@
 
 Search and edit those results instantly.
 
+## Demonstration
+
+  <iframe src="http://showterm.io/8f3421bae1d48c2109e1d#fast" width="640" height="480"></iframe>
+
+  [showterm-demonstration](http://showterm.io/8f3421bae1d48c2109e1d#fast)
+
 ## Details
 
 Search for specific terms in files using AG (the-silver-searcher) and then jump to instantly edit those lines in VIM.
