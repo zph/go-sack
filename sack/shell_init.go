@@ -10,7 +10,7 @@ func shellInit(c *cli.Context) {
     sack=$(which sack)
 
     alias S="${sack} -s"
-    alias F="${sack} -e"
+    alias E="${sack} -e"
     `
 
 	fmt.Println(sh)
@@ -23,7 +23,7 @@ func shellEval(c *cli.Context) {
 
 /*
 // TODO: Add bash and zsh autocomplete
-
+CREDIT: https://github.com/codegangsta/cli/blob/master/autocomplete/bash_autocomplete
     _cli_bash_autocomplete() {
         local cur prev opts base
         COMPREPLY=()
