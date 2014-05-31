@@ -20,19 +20,32 @@ func Execute() {
 		cli.BoolFlag{"debug, d", "show all the texts"},
 	}
 
+    app.Commands = []cli.Command{
+        {
+            Name:      "init",
+            Usage:     "shell init script",
+            Action: func(c *cli.Context) {
+                shellInit(c)
+            },
+        },
+    }
 	app.Action = func(c *cli.Context) {
 
 		if c.Bool("debug") {
 			fmt.Printf("Context %#v\n", c)
 		}
 
-		if c.Bool("edit") {
+        switch true { 
+        case c.Bool("edit"):
 			edit(c)
-		} else if c.Bool("search") {
-			search(c)
-		} else if c.Bool("print") || true {
-			display()
-		}
+        case c.Bool("search"):
+            search(c)
+        case c.Bool("print"):
+            display()
+        default:
+            search(c)
+        }
 	}
+
 	app.Run(os.Args)
 }

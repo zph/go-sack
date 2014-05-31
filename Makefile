@@ -11,4 +11,4 @@ lint:
 	./bin/go-lint
 
 build:
-	go build main.go sack
+	go build -o pkg/sack main.go
