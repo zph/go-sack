@@ -19,3 +19,6 @@ clean:
 install: clean build
 	cp pkg/sack ~/bin/sack
 
+readme: clean build
+	ruby -rerb -e "puts ERB.new(File.read('src/README.md.erb')).result" > README.md
+
