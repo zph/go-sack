@@ -10,7 +10,7 @@ func shellInit(c *cli.Context) {
     sack=$(which sack)
 
     alias S="${sack} -s"
-    alias E="${sack} -e"
+    alias F="${sack} -e"
     `
 
 	fmt.Println(sh)
