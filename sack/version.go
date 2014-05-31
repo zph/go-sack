@@ -1,5 +1,5 @@
 package sack
 
 func Version() string {
-    return "0.2.4"
+	return "0.2.4"
 }

@@ -2,8 +2,8 @@ package sack
 
 import (
 	"io/ioutil"
-    "path"
-    "strings"
+	"path"
+	"strings"
 )
 
 func checkState() {}
@@ -26,4 +26,3 @@ func content() []string {
 	lines := strings.Split(string(dat), "\n")
 	return lines[0 : len(lines)-1]
 }
-

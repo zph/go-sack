@@ -1,9 +1,9 @@
 package sack
 
 import (
+	"fmt"
 	"github.com/codegangsta/cli"
-    "fmt"
-    "os"
+	"os"
 )
 
 func Execute() {

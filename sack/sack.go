@@ -1,16 +1,16 @@
 package sack
 
 import (
-	"github.com/wsxiaoys/terminal/color"
 	"bufio"
+	"fmt"
+	"github.com/codegangsta/cli"
+	"github.com/wsxiaoys/terminal/color"
+	"os"
 	"os/exec"
 	"path"
 	"strconv"
 	"strings"
 	"syscall"
-	"fmt"
-	"github.com/codegangsta/cli"
-	"os"
 )
 
 func display() {
@@ -68,24 +68,24 @@ type agLine struct {
 }
 
 func search(c *cli.Context) {
-    argLen := len(c.Args())
-    var searchTerm string
-    var searchPath string
+	argLen := len(c.Args())
+	var searchTerm string
+	var searchPath string
 
-    switch argLen {
-    case 0:
-        panic(1)
-    case 1:
-        searchTerm    = c.Args()[0]
-        searchPath, _ = os.Getwd()
-    case 2:
-        searchTerm = c.Args()[0]
-        searchPath = c.Args()[1]
-    default:
-        searchTerm = c.Args()[0]
-        searchPath = c.Args()[1]
-        // panic(1)
-    }
+	switch argLen {
+	case 0:
+		panic(1)
+	case 1:
+		searchTerm = c.Args()[0]
+		searchPath, _ = os.Getwd()
+	case 2:
+		searchTerm = c.Args()[0]
+		searchPath = c.Args()[1]
+	default:
+		searchTerm = c.Args()[0]
+		searchPath = c.Args()[1]
+		// panic(1)
+	}
 
 	lines := executeCmd(searchTerm, searchPath)
 
