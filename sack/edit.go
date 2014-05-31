@@ -13,8 +13,15 @@ import (
 func edit(c *cli.Context) {
 	lines := content()
 
-	ind, err := strconv.Atoi(c.Args()[0])
-	check(err)
+    argLen := len(c.Args())
+
+    var ind int
+
+    if argLen == 0 {
+        ind = 0
+    } else {
+        ind, _ = strconv.Atoi(c.Args()[0])
+    }
 
 	selectedLine := lines[ind]
 	lineArr := strings.Split(selectedLine, " ")
