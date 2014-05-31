@@ -18,6 +18,7 @@ func Execute() {
 		cli.BoolFlag{"search, s", "search-ack/ag it"},
 		cli.BoolFlag{"print, p", "display existing shortcuts"},
 		cli.BoolFlag{"debug, d", "show all the texts"},
+		cli.StringFlag{"flags, f", "-i", "flags to pass to ag"},
 	}
 
 	app.Commands = []cli.Command{

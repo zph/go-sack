@@ -11,12 +11,23 @@ import (
 	"strings"
 )
 
-func executeCmd(searchTerm string, searchPath string) []string {
+func executeCmd(searchTerm string, searchPath string, flags string) []string {
+	const agCmd string = "ag"
+
 	agBin, err := exec.LookPath(agCmd)
 
-	cmd, err := exec.Command(agBin, flags, searchTerm, searchPath).Output()
+	// fmt.Printf("%#v %#v %#v %#v", agBin, flags, searchTerm, searchPath)
+
+	// Blows up if flags == "" without this conditional
+	var cmdOut []byte
+	if flags == "" {
+		cmdOut, err = exec.Command(agBin, searchTerm, searchPath).Output()
+	} else {
+		cmdOut, err = exec.Command(agBin, flags, searchTerm, searchPath).Output()
+	}
+
 	check(err)
-	lines := strings.Split(string(cmd), "\n")
+	lines := strings.Split(string(cmdOut), "\n")
 	return lines
 }
 
@@ -43,10 +54,9 @@ func search(c *cli.Context) {
 	default:
 		searchTerm = c.Args()[0]
 		searchPath = c.Args()[1]
-		// panic(1)
 	}
 
-	lines := executeCmd(searchTerm, searchPath)
+	lines := executeCmd(searchTerm, searchPath, c.String("flags"))
 
 	filePath := path.Join(home, shortcutFilename)
 	f, err := os.Create(filePath)

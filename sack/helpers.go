@@ -1,6 +1,7 @@
 package sack
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path"
 	"strings"
@@ -15,6 +16,7 @@ func splitLine(s string) []string {
 
 func check(e error) {
 	if e != nil {
+		fmt.Printf("\n----\nError: %#v\n----\n", e)
 		panic(e)
 	}
 }

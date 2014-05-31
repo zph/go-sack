@@ -10,18 +10,22 @@ import (
 	"syscall"
 )
 
+// TODO: add multiple edits sack -e 1 2 3
 func edit(c *cli.Context) {
 	lines := content()
 
-    argLen := len(c.Args())
+	argLen := len(c.Args())
 
-    var ind int
+	var ind int
 
-    if argLen == 0 {
-        ind = 0
-    } else {
-        ind, _ = strconv.Atoi(c.Args()[0])
-    }
+	switch argLen {
+	case 0:
+		ind = 0
+	case 1:
+		ind, _ = strconv.Atoi(c.Args()[0])
+	default:
+		panic(1)
+	}
 
 	selectedLine := lines[ind]
 	lineArr := strings.Split(selectedLine, " ")
