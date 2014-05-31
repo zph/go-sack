@@ -13,37 +13,6 @@ import (
 	"os"
 )
 
-func Execute() {
-	checkState()
-
-	app := cli.NewApp()
-	app.Name = "Sack"
-	app.Usage = "sack [searchterm] [optional directory]"
-	app.Version = "0.2.3"
-	app.Flags = []cli.Flag{
-		cli.BoolFlag{"edit, e", "edit a given shortcut"},
-		cli.BoolFlag{"search, s", "search-ack/ag it"},
-		cli.BoolFlag{"print, p", "display existing shortcuts"},
-		cli.BoolFlag{"debug, d", "show all the texts"},
-	}
-
-	app.Action = func(c *cli.Context) {
-
-		if c.Bool("debug") {
-			fmt.Printf("Context %#v\n", c)
-		}
-
-		if c.Bool("edit") {
-			edit(c)
-		} else if c.Bool("search") {
-			search(c)
-		} else if c.Bool("print") || true {
-			display()
-		}
-	}
-	app.Run(os.Args)
-}
-
 func display() {
 	lines := content()
 
@@ -86,7 +55,6 @@ func edit(c *cli.Context) {
 func executeCmd(searchTerm string, searchPath string) []string {
 	agBin, err := exec.LookPath(agCmd)
 
-	fmt.Println("PPath: ", searchPath)
 	cmd, err := exec.Command(agBin, flags, searchTerm, searchPath).Output()
 	check(err)
 	lines := strings.Split(string(cmd), "\n")
@@ -100,13 +68,26 @@ type agLine struct {
 }
 
 func search(c *cli.Context) {
-	searchTerm := c.Args()[0]
-	searchPath := c.Args()[1]
-	// TODO: allow PWD as default value for searchPath
-	//     searchPath, _ = os.Getwd()
+    argLen := len(c.Args())
+    var searchTerm string
+    var searchPath string
+
+    switch argLen {
+    case 0:
+        panic(1)
+    case 1:
+        searchTerm    = c.Args()[0]
+        searchPath, _ = os.Getwd()
+    case 2:
+        searchTerm = c.Args()[0]
+        searchPath = c.Args()[1]
+    default:
+        searchTerm = c.Args()[0]
+        searchPath = c.Args()[1]
+        // panic(1)
+    }
 
 	lines := executeCmd(searchTerm, searchPath)
-	fmt.Println("Lines len ", len(lines))
 
 	filePath := path.Join(home, shortcutFilename)
 	f, err := os.Create(filePath)
