@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/wsxiaoys/terminal/color"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -16,7 +15,7 @@ func executeCmd(term string, path string, flags string) []string {
 	var lines []string
 	_, err := exec.LookPath(agCmd)
 	if err == nil {
-		lines = agSearch(term, path, flags)
+	lines = agSearch(term, path, flags)
 	} else {
 		lines = grepSearch(term, path, flags)
 	}
@@ -102,7 +101,7 @@ func search(c *cli.Context) {
 	check(err)
 	defer f.Close()
 
-	color.Printf("@r[%2s]@{|} @b%5s@{|}  @g%s@{|}\n", "IDX", "Line", "Path")
+	fmt.Print(header)
 
 	for i, line := range lines {
 

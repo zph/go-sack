@@ -11,7 +11,8 @@ lint:
 	./bin/go-lint
 
 build: clean
-	go build -o dist/sack main.go
+	go build -o dist/sack main.go; \
+		GOARCH=amd64 GOOS=linux go build -o dist/sack.linux_amd64 main.go
 
 clean:
 	rm -f dist/*

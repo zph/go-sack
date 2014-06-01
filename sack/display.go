@@ -15,7 +15,7 @@ func display() {
 	check(err)
 
 	// Header
-	color.Printf("@r[%2s]@{|} @b%5s@{|}  @g%s@{|}\n", "IDX", "Line", "Path")
+	fmt.Print(header)
 
 	for i, line := range lines {
 		li := strings.SplitN(line, " ", 3)
