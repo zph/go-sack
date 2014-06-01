@@ -1,10 +1,10 @@
-# go-sack
+# sack
 
-Search and edit those results instantly.
+Search and edit those results instantly. (Named comes from search-ack, now ag).
 
 ## Demonstration
 
-  [showterm-demonstration](http://showterm.io/8f3421bae1d48c2109e1d#fast)
+  [sack demo](http://showterm.io/8f3421bae1d48c2109e1d#fast)
 
 ## Details
 
@@ -81,9 +81,15 @@ GLOBAL OPTIONS:
     
   Rewritten for cleanliness in go-lang for speed b/c Ruby standalone scripts with dependencies aren't convenient, & b/c Shell scripts past a certain length are unwieldy.
 
+## Dependencies
+
+  - ag [the-silver-searcher](https://github.com/ggreer/the_silver_searcher)
+    - Falls back to use grep... but don't do that :P.
+
 ## License
 
-  2014 (TM) Zander Hill
+MIT License (MIT)
+Copyright (c) 2014 Zander Hill
 
 ## Contributing
 

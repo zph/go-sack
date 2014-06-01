@@ -11,24 +11,55 @@ import (
 	"strings"
 )
 
-func executeCmd(searchTerm string, searchPath string, flags string) []string {
-	const agCmd string = "ag"
+func executeCmd(term string, path string, flags string) []string {
 
-	agBin, err := exec.LookPath(agCmd)
+	var lines []string
+	_, err := exec.LookPath(agCmd)
+	if err == nil {
+		lines = agSearch(term, path, flags)
+	} else {
+		lines = grepSearch(term, path, flags)
+	}
 
-	// fmt.Printf("%#v %#v %#v %#v", agBin, flags, searchTerm, searchPath)
+	return lines
+}
+
+func agSearch(term string, path string, flags string) []string {
+	bin := getPath(agCmd)
 
 	// Blows up if flags == "" without this conditional
 	var cmdOut []byte
+	var err error
 	if flags == "" {
-		cmdOut, err = exec.Command(agBin, searchTerm, searchPath).Output()
+		cmdOut, err = exec.Command(bin, term, path).Output()
 	} else {
-		cmdOut, err = exec.Command(agBin, flags, searchTerm, searchPath).Output()
+		cmdOut, err = exec.Command(bin, flags, term, path).Output()
 	}
-
 	check(err)
-	lines := strings.Split(string(cmdOut), "\n")
-	return lines
+
+	return outputLines(cmdOut)
+}
+
+func getPath(bin string) string {
+	agBin, err := exec.LookPath(bin)
+	check(err)
+	return agBin
+}
+
+func grepSearch(term string, path string, flags string) []string {
+	bin := getPath(grepCmd)
+
+	flag1 := "-ir"
+	flag2 := "--line-number"
+
+	cmdOut, err := exec.Command(bin, flag1, flag2, term, path).Output()
+	check(err)
+
+	return outputLines(cmdOut)
+}
+
+func outputLines(b []byte) []string {
+	return strings.Split(string(b), "\n")
 }
 
 type agLine struct {

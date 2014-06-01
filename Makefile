@@ -1,11 +1,11 @@
 search: pkg/sack
-	./pkg/sack -s ruby ${HOME}/.zsh.d/
+	go run main.go -s ruby ${HOME}/.zsh.d/
 
 edit: pkg/sack
-	./pkg/sack -e 0
+	go run main.go -e 0
 
 print: pkg/sack
-	./pkg/sack -p
+	go run main.go -p
 
 lint:
 	./bin/go-lint
@@ -20,5 +20,6 @@ install: clean build
 	cp pkg/sack ~/bin/sack
 
 readme: clean build
-	ruby -rerb -e "puts ERB.new(File.read('src/README.md.erb')).result" > README.md
+	ruby -rerb -e "puts ERB.new(File.read('src/README.md.erb')).result" > README.md \
+		&& cat README.md
 
