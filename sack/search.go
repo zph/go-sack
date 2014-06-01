@@ -15,7 +15,7 @@ func executeCmd(term string, path string, flags string) []string {
 	var lines []string
 	_, err := exec.LookPath(agCmd)
 	if err == nil {
-	lines = agSearch(term, path, flags)
+		lines = agSearch(term, path, flags)
 	} else {
 		lines = grepSearch(term, path, flags)
 	}
