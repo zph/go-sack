@@ -51,7 +51,7 @@ func Execute() {
 		case c.Bool("print"):
 			display()
 		default:
-			search(c)
+			display()
 		}
 	}
 

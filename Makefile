@@ -15,7 +15,9 @@ hooks:
 
 build: clean
 	go build -o dist/sack main.go; \
-		GOARCH=amd64 GOOS=linux go build -o dist/sack.linux_amd64 main.go
+		GOARCH=amd64 GOOS=linux go build -o dist/sack.linux_amd64 main.go; \
+		GOARCH=amd64 GOOS=freebsd go build -o dist/sack.freebsd_amd64 main.go; \
+		go build -gcflags '-N' -o dist/sack.debug main.go;
 
 clean:
 	rm -f dist/*
