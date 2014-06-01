@@ -14,13 +14,19 @@ Sack outputs those shortcuts into `~/.sack_shortcuts` for easy editing/re-use ac
 
 It's a reimplementation of [sack](https://github.com/zph/sack), which was a ruby re-implementation of the original bash script [sack](https://github.com/sampson-chen/sack).
 
-## Installation
+## Installation (on Mac)
 
-`wget -o ~/bin/sack https://github.com/zph/go-sack/raw/master/pkg/sack && chmod +x ~/bin/sack`
+`wget -o ~/bin/sack https://github.com/zph/go-sack/raw/master/dist/sack && chmod +x ~/bin/sack`
 
 Or for the reckless:
 
-`bash <(curl https://github.com/zph/go-sack/raw/master/src/install)`
+```
+curl --silent https://github.com/zph/go-sack/raw/master/src/install | bash
+```
+
+## Installation on other platforms
+
+Install from source using usual go build. Clone it && `make build` or `make install`.
 
 For shell integration (sets up two aliases) add the following to your `.zshrc or .bashrc`
 

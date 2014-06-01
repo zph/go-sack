@@ -10,13 +10,23 @@ Search and edit those results instantly. (Named comes from search-ack, now ag).
 
 Search for specific terms in files using AG (the-silver-searcher) and then jump to instantly edit those lines in VIM.
 
-Sack outputs those shortcuts into `~/.sack_shortcuts` for easy editing across any terminal on the system.
+Sack outputs those shortcuts into `~/.sack_shortcuts` for easy editing/re-use across any terminal on the system.
 
 It's a reimplementation of [sack](https://github.com/zph/sack), which was a ruby re-implementation of the original bash script [sack](https://github.com/sampson-chen/sack).
 
-## Installation
+## Installation (on Mac)
 
-`wget -o ~/bin/sack https://github.com/zph/go-sack/raw/master/pkg/sack && chmod +x ~/bin/sack`
+`wget -o ~/bin/sack https://github.com/zph/go-sack/raw/master/dist/sack && chmod +x ~/bin/sack`
+
+Or for the reckless:
+
+```
+curl --silent https://github.com/zph/go-sack/raw/master/src/install | bash
+```
+
+## Installation on other platforms
+
+Install from source using usual go build. Clone it && `make build` or `make install`.
 
 For shell integration (sets up two aliases) add the following to your `.zshrc or .bashrc`
 
@@ -101,5 +111,3 @@ Copyright (c) 2014 Zander Hill
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
-
