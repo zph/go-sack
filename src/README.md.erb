@@ -10,7 +10,7 @@ Search and edit those results instantly. (Named comes from search-ack, now ag).
 
 Search for specific terms in files using AG (the-silver-searcher) and then jump to instantly edit those lines in VIM.
 
-Sack outputs those shortcuts into `~/.sack_shortcuts` for easy editing across any terminal on the system.
+Sack outputs those shortcuts into `~/.sack_shortcuts` for easy editing/re-use across any terminal on the system.
 
 It's a reimplementation of [sack](https://github.com/zph/sack), which was a ruby re-implementation of the original bash script [sack](https://github.com/sampson-chen/sack).
 
@@ -18,7 +18,7 @@ It's a reimplementation of [sack](https://github.com/zph/sack), which was a ruby
 
 `wget -o ~/bin/sack https://github.com/zph/go-sack/raw/master/pkg/sack && chmod +x ~/bin/sack`
 
-Or for the reckless
+Or for the reckless:
 
 `bash <(curl https://github.com/zph/go-sack/raw/master/src/install)`
 
@@ -70,7 +70,8 @@ To display current shortcuts:
 
 ## License
 
-<%= `head -3 LICENSE | sed '/^$/d' | sed -e 's/The //' ` %>
+<%= `head -3 LICENSE | sed '/^$/d' | sed -e 's/The //' `.chomp %>
+
 ## Contributing
 
   Input and pull requests are welcomed!
@@ -80,5 +81,3 @@ To display current shortcuts:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
-
