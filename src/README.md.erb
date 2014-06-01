@@ -26,6 +26,12 @@ curl -sSL https://github.com/zph/go-sack/raw/master/src/install | bash -s
 
 ## Installation on other platforms
 
+Install script will try to match for the right version of binary (only amd64 arch):
+
+```
+curl -sSL https://github.com/zph/go-sack/raw/master/src/install | bash -s
+```
+
 Check for your platform's bin on repo's [Release Page](https://github.com/zph/go-sack/releases).
 
 Install that into somewhere in your $PATH and chmod +x that puppy.
