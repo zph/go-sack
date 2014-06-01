@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/wsxiaoys/terminal/color"
+	"io/ioutil"
 	"os"
 	"os/exec"
-	"path"
 	"strings"
 )
 
@@ -68,28 +68,36 @@ type agLine struct {
 	content string
 }
 
-func search(c *cli.Context) {
+func setTermPath(c *cli.Context) (string, string) {
 	argLen := len(c.Args())
-	var searchTerm string
-	var searchPath string
-
+	var term string
+	var path string
 	switch argLen {
 	case 0:
 		panic(1)
 	case 1:
-		searchTerm = c.Args()[0]
-		searchPath, _ = os.Getwd()
+		term = c.Args()[0]
+		path, _ = os.Getwd()
 	case 2:
-		searchTerm = c.Args()[0]
-		searchPath = c.Args()[1]
+		term = c.Args()[0]
+		path = c.Args()[1]
 	default:
-		searchTerm = c.Args()[0]
-		searchPath = c.Args()[1]
+		term = c.Args()[0]
+		path = c.Args()[1]
 	}
+	return term, path
+}
 
-	lines := executeCmd(searchTerm, searchPath, c.String("flags"))
+func search(c *cli.Context) {
 
-	filePath := path.Join(home, shortcutFilename)
+	term, searchPath := setTermPath(c)
+
+	lines := executeCmd(term, searchPath, c.String("flags"))
+
+	t := []byte(term)
+	err := ioutil.WriteFile(termPath, t, 0644)
+	check(err)
+
 	f, err := os.Create(filePath)
 	check(err)
 	defer f.Close()
@@ -104,8 +112,8 @@ func search(c *cli.Context) {
 
 		lp := splitLine(line)
 		l := agLine{file: lp[0], line: lp[1], content: lp[2]}
-		s := color.Sprintf("@r[%2d]@{|} @b%5s@{|}  @g%s@{|} %s", i, l.line, l.file, l.content)
-		// TODO: highlight search term using case insensitive regex
+
+		s := displayLines(term, i, l.line, l.file, l.content)
 		fmt.Println(s)
 		o := fmt.Sprint(l.line, " ", l.file, " ", l.content, "\n")
 
