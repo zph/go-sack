@@ -1,3 +1,14 @@
 #!/bin/bash
 
-make build && make readme && make lint
+make build && make readme > /dev/null
+
+response=$(gofmt -l main.go sack/*.go)
+
+if [[ $response == "" ]];then
+  exit 0
+else
+  echo "Linting needed: $response"
+  make lint
+
+  exit 1
+fi

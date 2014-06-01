@@ -1,7 +1,7 @@
 package main
 
 import (
-    "github.com/zph/go-sack/sack"
+	"github.com/zph/go-sack/sack"
 )
 
 /*
@@ -12,7 +12,6 @@ TODO:
 - Improve columnar layout of printed text
 */
 
-
 func main() {
-    sack.Execute()
+	sack.Execute()
 }
