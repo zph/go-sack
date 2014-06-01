@@ -5,10 +5,20 @@ make build && make readme > /dev/null
 response=$(gofmt -l main.go sack/*.go)
 
 if [[ $response == "" ]];then
-  exit 0
+  # TODO:
+  # files=$(./bin/has-changed-bins)
+  # exit_val=$?
+  # echo $exit_val
+
+  # if [[ $files != "" ]];then
+  #   echo "Binaries have changed: Stage and commit ($files)"
+  #   exit 1
+  # fi
+  val=""
 else
   echo "Linting needed: $response"
   make lint
 
   exit 1
 fi
+

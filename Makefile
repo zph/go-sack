@@ -10,6 +10,9 @@ print: dist/sack
 lint:
 	./bin/go-lint
 
+hooks:
+	cp -f hooks/* .git/hooks/
+
 build: clean
 	go build -o dist/sack main.go; \
 		GOARCH=amd64 GOOS=linux go build -o dist/sack.linux_amd64 main.go
