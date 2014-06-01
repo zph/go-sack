@@ -20,9 +20,10 @@ It's a reimplementation of [sack](https://github.com/zph/sack), which was a ruby
 
 For shell integration (sets up two aliases) add the following to your `.zshrc or .bashrc`
 
-`eval "$(sack init)"`
+```
+eval "$(sack init)"
+```
 
-``
 ## Usage
 
 To search in a directory:
@@ -78,7 +79,7 @@ GLOBAL OPTIONS:
 
   Original idea & implementation belong to @sampson-chen:
   https://github.com/sampson-chen/sack.
-    
+
   Rewritten for cleanliness in go-lang for speed b/c Ruby standalone scripts with dependencies aren't convenient, & b/c Shell scripts past a certain length are unwieldy.
 
 ## Dependencies

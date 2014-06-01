@@ -18,11 +18,16 @@ It's a reimplementation of [sack](https://github.com/zph/sack), which was a ruby
 
 `wget -o ~/bin/sack https://github.com/zph/go-sack/raw/master/pkg/sack && chmod +x ~/bin/sack`
 
+Or for the reckless
+
+`bash <(curl https://github.com/zph/go-sack/raw/master/src/install)`
+
 For shell integration (sets up two aliases) add the following to your `.zshrc or .bashrc`
 
-`eval "$(sack init)"`
+```
+<%= `go run main.go eval`.chomp %>
+```
 
-``
 ## Usage
 
 To search in a directory:
@@ -55,7 +60,7 @@ To display current shortcuts:
 
   Original idea & implementation belong to @sampson-chen:
   https://github.com/sampson-chen/sack.
-    
+
   Rewritten for cleanliness in go-lang for speed b/c Ruby standalone scripts with dependencies aren't convenient, & b/c Shell scripts past a certain length are unwieldy.
 
 ## Dependencies
