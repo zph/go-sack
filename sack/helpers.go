@@ -10,7 +10,7 @@ import (
 func checkState() {}
 
 func splitLine(s string) []string {
-	arr := strings.Split(s, ":")
+	arr := strings.SplitN(s, ":", 3)
 	return arr
 }
 
