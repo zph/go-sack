@@ -7,7 +7,7 @@ echo "Installing sack"
 echo "Source: $url"
 echo "Output: $bin_path"
 
-wget -o $bin_path $url && chmod +x $bin_path
+wget -O $bin_path $url && chmod +x $bin_path
 
 if [[ $? == 0 ]];then
   echo "Successfully installed"

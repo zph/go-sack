@@ -21,7 +21,7 @@ It's a reimplementation of [sack](https://github.com/zph/sack), which was a ruby
 Or for the reckless:
 
 ```
-curl --silent https://github.com/zph/go-sack/raw/master/src/install | bash
+curl -sSL https://github.com/zph/go-sack/raw/master/src/install | bash -s
 ```
 
 ## Installation on other platforms
