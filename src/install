@@ -1,6 +1,6 @@
 #!/bin/bash
 
-url="https://github.com/zph/go-sack/raw/master/dist/sack"
+url="https://github.com/zph/go-sack/releases/download/v0.3.0/sack"
 bin_path="$HOME/bin/sack"
 
 echo "Installing sack"

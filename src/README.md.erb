@@ -16,7 +16,7 @@ It's a reimplementation of [sack](https://github.com/zph/sack), which was a ruby
 
 ## Installation (on Mac)
 
-`wget -o ~/bin/sack https://github.com/zph/go-sack/raw/master/dist/sack && chmod +x ~/bin/sack`
+`wget -o ~/bin/sack https://github.com/zph/go-sack/releases/download/v0.3.0/sack && chmod +x ~/bin/sack`
 
 Or for the reckless:
 
@@ -25,6 +25,12 @@ curl -sSL https://github.com/zph/go-sack/raw/master/src/install | bash -s
 ```
 
 ## Installation on other platforms
+
+Check for your platform's bin on repo's [Release Page](https://github.com/zph/go-sack/releases).
+
+Install that into somewhere in your $PATH and chmod +x that puppy.
+
+OR:
 
 Install from source using usual go build. Clone it && `make build` or `make install`.
 
