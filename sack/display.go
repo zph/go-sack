@@ -25,9 +25,9 @@ func display() {
 }
 
 func displayLines(term string, ind int, line string, file string, content string) string {
-	str := fmt.Sprint("(?i)", term)
+	str := fmt.Sprint("(?i)", "(", term, ")")
 	reg, _ := regexp.Compile(str)
-	hiContent := reg.ReplaceAllString(content, color.Sprintf("@{r!}%s", term))
+	hiContent := reg.ReplaceAllString(content, color.Sprintf("@{r!}$1"))
 	s := color.Sprintf("@r[%2d]@{|} @b%5s@{|}  @g%s@{|} %s", ind, line, file, hiContent)
 	return s
 }
