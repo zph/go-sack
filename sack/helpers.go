@@ -24,7 +24,10 @@ func check(e error) {
 func content() []string {
 	filePath := path.Join(home, shortcutFilename)
 	dat, err := ioutil.ReadFile(filePath)
-	check(err)
+	if err != nil {
+		fmt.Println("Unable to open shortcut file. Try doing a search.")
+		panic(1)
+	}
 	lines := strings.Split(string(dat), "\n")
 	return lines[0 : len(lines)-1]
 }
