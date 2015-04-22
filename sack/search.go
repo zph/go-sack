@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/codegangsta/cli"
+	. "github.com/tj/go-debug"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -11,12 +12,16 @@ import (
 )
 
 func executeCmd(term string, path string, flags string) []string {
+	var debug = Debug("sack:search")
 
+	debug("executeCmd:agCmd: %v", agCmd)
 	var lines []string
 	_, err := exec.LookPath(agCmd)
 	if err == nil {
+		debug("executing Ag search")
 		lines = agSearch(term, path, flags)
 	} else {
+		debug("executing Grep search")
 		lines = grepSearch(term, path, flags)
 	}
 
@@ -34,6 +39,11 @@ func agSearch(term string, path string, flags string) []string {
 	} else {
 		cmdOut, err = exec.Command(bin, flags, term, path).Output()
 	}
+
+	var debug = Debug("sack:search")
+	debug("bin: %v, flags: %v, term: %v, path: %v", bin, flags, term, path)
+	debug("Exec: %v %v %v %v", bin, flags, term, path)
+	debug("cmdOut: %v", outputLines(cmdOut))
 	check(err)
 
 	return outputLines(cmdOut)
@@ -41,6 +51,9 @@ func agSearch(term string, path string, flags string) []string {
 
 func getPath(bin string) string {
 	agBin, err := exec.LookPath(bin)
+	var debug = Debug("sack:search")
+	debug("getPath:agBin: %v", agBin)
+	debug("getPath:err: %v", err)
 	check(err)
 	return agBin
 }
@@ -71,6 +84,8 @@ func setTermPath(c *cli.Context) (string, string) {
 	argLen := len(c.Args())
 	var term string
 	var path string
+	var debug = Debug("sack:search")
+	debug("setTermPath:argLen: %v", argLen)
 	switch argLen {
 	case 0:
 		panic(1)

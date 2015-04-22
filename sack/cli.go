@@ -1,7 +1,6 @@
 package sack
 
 import (
-	"fmt"
 	"github.com/codegangsta/cli"
 	"os"
 )
@@ -39,9 +38,7 @@ func Execute() {
 	}
 	app.Action = func(c *cli.Context) {
 
-		if c.Bool("debug") {
-			fmt.Printf("Context %#v\n", c)
-		}
+		debug("Execute:cli.Context %v", c)
 
 		switch true {
 		case c.Bool("edit"):

@@ -1,6 +1,7 @@
 package main
 
 import (
+	. "github.com/tj/go-debug"
 	"github.com/zph/go-sack/sack"
 )
 
@@ -12,6 +13,9 @@ TODO:
 - Improve columnar layout of printed text
 */
 
+var debug = Debug("sack:main")
+
 func main() {
+	debug("starting main")
 	sack.Execute()
 }

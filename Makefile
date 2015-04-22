@@ -1,6 +1,9 @@
 search: dist/sack
 	go run main.go -s ruby ${HOME}/.zsh.d/
 
+alias_search:
+	go run main.go -s cmd_
+
 edit: dist/sack
 	go run main.go -e 0
 
@@ -23,7 +26,7 @@ clean:
 	rm -f dist/*
 
 install: clean build
-	cp dist/sack ~/bin/sack
+	cp dist/sack ~/bin/sack && chmod +x ~/bin/sack
 
 readme: clean build
 	ruby -rerb -e "puts ERB.new(File.read('src/README.md.erb')).result" > README.md \
