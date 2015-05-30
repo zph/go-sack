@@ -41,10 +41,12 @@ func agSearch(term string, path string, flags string) []string {
 	}
 
 	var debug = Debug("sack:search")
-	debug("bin: %v, flags: %v, term: %v, path: %v", bin, flags, term, path)
-	debug("Exec: %v %v %v %v", bin, flags, term, path)
-	debug("cmdOut: %v", outputLines(cmdOut))
-	check(err)
+	debug("agSearch:bin: %v, flags: %v, term: %v, path: %v", bin, flags, term, path)
+	debug("agSearch:Exec: %v %v %v %v", bin, flags, term, path)
+	debug("agSearch:cmdOut: %v", outputLines(cmdOut))
+	debug("agSearch:err: %v", err)
+
+	checkCmd(err)
 
 	return outputLines(cmdOut)
 }
@@ -65,7 +67,7 @@ func grepSearch(term string, path string, flags string) []string {
 	flag2 := "--line-number"
 
 	cmdOut, err := exec.Command(bin, flag1, flag2, term, path).Output()
-	check(err)
+	checkCmd(err)
 
 	return outputLines(cmdOut)
 }
@@ -107,6 +109,14 @@ func search(c *cli.Context) {
 	term, searchPath := setTermPath(c)
 
 	lines := executeCmd(term, searchPath, c.String("flags"))
+
+	if len(lines) == 0 {
+
+		var debug = Debug("sack:search:error")
+		debug("nolines:lines: %v", lines)
+
+		return
+	}
 
 	t := []byte(term)
 	err := ioutil.WriteFile(termPath, t, 0644)

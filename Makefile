@@ -2,7 +2,7 @@ search: dist/sack
 	go run main.go -s ruby ${HOME}/.zsh.d/
 
 alias_search:
-	go run main.go -s cmd_
+	go run main.go -s cmd_non-existent ~/bin
 
 edit: dist/sack
 	go run main.go -e 0

@@ -21,6 +21,15 @@ func check(e error) {
 	}
 }
 
+// TODO: hack, fix properly by learning to work w/ Golang Error Types
+func checkCmd(e error) {
+	str := fmt.Sprintf("%s", e)
+	if e != nil && str != "exit status 1" {
+		fmt.Printf("\n----\nError: %#v\n----\n", e)
+		panic(e)
+	}
+}
+
 func content() []string {
 	filePath := path.Join(home, shortcutFilename)
 	dat, err := ioutil.ReadFile(filePath)
