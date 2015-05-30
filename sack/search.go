@@ -115,6 +115,7 @@ func search(c *cli.Context) {
 		var debug = Debug("sack:search:error")
 		debug("nolines:lines: %v", lines)
 
+		os.Exit(1)
 		return
 	}
 

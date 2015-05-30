@@ -78,7 +78,7 @@ USAGE:
    Sack [global options] command [command options] [arguments...]
 
 VERSION:
-   0.3.1
+   0.3.2
 
 COMMANDS:
    init		shell init script
