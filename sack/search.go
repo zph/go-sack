@@ -104,6 +104,20 @@ func setTermPath(c *cli.Context) (string, string) {
 	return term, path
 }
 
+func truncateLine(line string) string {
+	// Lines longer than maxLength are often junk results
+	actualContentLen := len(line)
+	maxLength := 200
+	var contentLen int
+	if actualContentLen > maxLength {
+		contentLen = maxLength
+	} else {
+		contentLen = len(line)
+	}
+
+	return line[:contentLen]
+}
+
 func search(c *cli.Context) {
 
 	term, searchPath := setTermPath(c)
@@ -136,7 +150,8 @@ func search(c *cli.Context) {
 		}
 
 		lp := splitLine(line)
-		l := agLine{file: lp[0], line: lp[1], content: lp[2]}
+
+		l := agLine{file: lp[0], line: lp[1], content: truncateLine(lp[2])}
 
 		s := displayLines(term, i, l.line, l.file, l.content)
 		fmt.Println(s)
