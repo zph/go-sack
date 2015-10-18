@@ -16,8 +16,12 @@ func executeCmd(term string, path string, flags string) []string {
 
 	debug("executeCmd:agCmd: %v", agCmd)
 	var lines []string
-	_, err := exec.LookPath(agCmd)
-	if err == nil {
+	_, agErr := exec.LookPath(agCmd)
+	_, ptErr := exec.LookPath(ptCmd)
+	if ptErr == nil {
+		debug("executing PT search")
+		lines = ptSearch(term, path, flags)
+	} else if agErr == nil {
 		debug("executing Ag search")
 		lines = agSearch(term, path, flags)
 	} else {
@@ -29,7 +33,15 @@ func executeCmd(term string, path string, flags string) []string {
 }
 
 func agSearch(term string, path string, flags string) []string {
-	bin := getPath(agCmd)
+	return genericSearch(agCmd, term, path, flags)
+}
+
+func ptSearch(term string, path string, flags string) []string {
+	return genericSearch(ptCmd, term, path, flags)
+}
+
+func genericSearch(cmd string, term string, path string, flags string) []string {
+	bin := getPath(cmd)
 
 	// Blows up if flags == "" without this conditional
 	var cmdOut []byte

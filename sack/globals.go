@@ -9,6 +9,7 @@ import (
 var home string = os.Getenv("HOME")
 
 const agCmd string = "ag"
+const ptCmd string = "pt"
 const grepCmd string = "grep"
 
 var filePath string = path.Join(home, shortcutFilename)
