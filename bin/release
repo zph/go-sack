@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Create new release
+# github-release -v release -u ${GH_USER} -r ${GH_REPO} -s $(cat ${GH_CREDENTIALS_FILE}) --tag v0.4.0
+
+# Upload something to new release
+# github-release upload -u ${GH_USER} -r ${GH_REPO} -s $(cat ${GH_CREDENTIALS_FILE}) -t v0.4.0 -f dist/sack -n sack
