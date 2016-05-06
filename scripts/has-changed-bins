@@ -1,0 +1,6 @@
+#!/bin/bash
+
+out=$(git status | grep $(git ls-files dist/*))
+exit_val=$?
+
+echo $out
