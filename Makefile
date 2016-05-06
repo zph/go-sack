@@ -39,12 +39,6 @@ build_all: clean
 		GOARCH=amd64 GOOS=freebsd go build -o bin/sack.freebsd_amd64 main.go; \
 		go build -gcflags '-N' -o bin/sack.debug main.go;
 
-# build: clean
-# 	go build -o bin/sack main.go
-
-# debug: clean
-# 	go build -gcflags '-N' -o bin/sack.debug main.go
-
 clean:
 	rm -f bin/*
 
