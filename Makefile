@@ -16,16 +16,16 @@ $(gb):
 	bash -c 'GOPATH="$$(pwd)/vendor" go install github.com/constabulary/gb/...'
 
 search: $(sack)
-	go run main.go -s ruby ${HOME}/.zsh.d/
+	$(sack) -s ruby ${HOME}/.zsh.d/
 
 alias_search:
-	go run main.go -s cmd_non-existent ~/bin
+	$(sack) -s cmd_non-existent ~/bin
 
 edit: $(sack)
-	go run main.go -e 0
+	$(sack) -e 0
 
 print: $(sack)
-	go run main.go -p
+	$(sack) -p
 
 lint:
 	./bin/go-lint
@@ -33,11 +33,11 @@ lint:
 hooks:
 	cp -f hooks/* .git/hooks/
 
-build_all: clean
-	go build -o bin/sack main.go; \
-		GOARCH=amd64 GOOS=linux go build -o bin/sack.linux_amd64 main.go; \
-		GOARCH=amd64 GOOS=freebsd go build -o bin/sack.freebsd_amd64 main.go; \
-		go build -gcflags '-N' -o bin/sack.debug main.go;
+# build_all: clean
+# 	go build -o bin/sack main.go; \
+# 		GOARCH=amd64 GOOS=linux go build -o bin/sack.linux_amd64 main.go; \
+# 		GOARCH=amd64 GOOS=freebsd go build -o bin/sack.freebsd_amd64 main.go; \
+# 		go build -gcflags '-N' -o bin/sack.debug main.go;
 
 clean:
 	rm -f bin/*
