@@ -5,7 +5,7 @@ gb := vendor/bin/gb
 
 .PHONY: build test
 
-build: $(gb)
+build: $(gb) clean
 	$(gb) build all
 
 test: $(gb)
