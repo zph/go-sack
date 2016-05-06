@@ -75,24 +75,23 @@ NAME:
    Sack - sack [searchterm] [optional directory]
 
 USAGE:
-   Sack [global options] command [command options] [arguments...]
-
+   sack [global options] command [command options] [arguments...]
+   
 VERSION:
    0.4.0
-
-COMMANDS:
-   init		shell init script
-   eval		shell eval command to insert into .{zsh,bash}rc
-   help, h	Shows a list of commands or help for one command
    
+COMMANDS:
+    init	shell init script
+    eval	shell eval command to insert into .{zsh,bash}rc
+
 GLOBAL OPTIONS:
-   --edit, -e		edit a given shortcut
-   --search, -s		search-ack/ag it
-   --print, -p		display existing shortcuts
-   --debug, -d		show all the texts
-   --flags, -f '-i'	flags to pass to ag
-   --version, -v	print the version
-   --help, -h		show help
+   --edit, -e			edit a given shortcut
+   --search, -s			search-ack/ag it
+   --print, -p			display existing shortcuts
+   --debug, -d			show all the texts
+   --flags value, -f value	flags to pass to ag
+   --help, -h			show help
+   --version, -v		print the version
    
 
 ```

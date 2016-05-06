@@ -24,15 +24,17 @@ func execute() {
 		{
 			Name:  "init",
 			Usage: "shell init script",
-			Action: func(c *cli.Context) {
+			Action: func(c *cli.Context) error {
 				shellInit(c)
+				return nil
 			},
 		},
 		{
 			Name:  "eval",
 			Usage: "shell eval command to insert into .{zsh,bash}rc",
-			Action: func(c *cli.Context) {
+			Action: func(c *cli.Context) error {
 				shellEval(c)
+				return nil
 			},
 		},
 	}

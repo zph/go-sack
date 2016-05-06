@@ -46,6 +46,6 @@ install: clean build
 	cp $(sack) $(binsack) && chmod +x $(binsack)
 
 readme: clean build
-	ruby -rerb -e "puts ERB.new(File.read('src/README.md.erb')).result" > README.md \
+	ruby -rerb -e "puts ERB.new(File.read('scripts/README.md.erb')).result" > README.md \
 		&& cat README.md
 
