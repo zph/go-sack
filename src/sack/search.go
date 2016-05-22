@@ -5,117 +5,23 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	. "github.com/tj/go-debug"
+	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
 )
 
-func executeCmd(term string, path string, flags string) []string {
-	var debug = Debug("sack:search")
-
-	debug("executeCmd:agCmd: %v", agCmd)
-	var lines []string
-	_, agErr := exec.LookPath(agCmd)
-	_, ptErr := exec.LookPath(ptCmd)
-	if ptErr == nil {
-		debug("executing PT search")
-		lines = ptSearch(term, path, flags)
-	} else if agErr == nil {
-		debug("executing Ag search")
-		lines = agSearch(term, path, flags)
-	} else {
-		debug("executing Grep search")
-		lines = grepSearch(term, path, flags)
-	}
-
-	return lines
-}
-
-func agSearch(term string, path string, flags string) []string {
-	return genericSearch(agCmd, term, path, flags)
-}
-
-func ptSearch(term string, path string, flags string) []string {
-	return genericSearch(ptCmd, term, path, flags)
-}
-
-func genericSearch(cmd string, term string, path string, flags string) []string {
-	var debug = Debug("sack:search")
-	bin := getPath(cmd)
-
-	// Blows up if flags == "" without this conditional
-	var cmdOut []byte
-	var err error
-	if flags == "" {
-		cmdOut, err = exec.Command(bin, term, path).Output()
-	} else {
-		cmdOut, err = exec.Command(bin, flags, term, path).Output()
-	}
-
-	debug("agSearch:bin: %v, flags: %v, term: %v, path: %v", bin, flags, term, path)
-	debug("agSearch:Exec: %v %v %v %v", bin, flags, term, path)
-	debug("agSearch:cmdOut: %v", outputLines(cmdOut))
-	debug("agSearch:err: %v", err)
-
-	checkCmd(err)
-
-	return outputLines(cmdOut)
-}
-
-func getPath(bin string) string {
-	agBin, err := exec.LookPath(bin)
-	var debug = Debug("sack:search")
-	debug("getPath:agBin: %v", agBin)
-	debug("getPath:err: %v", err)
-	check(err)
-	return agBin
-}
-
-func grepSearch(term string, path string, flags string) []string {
-	bin := getPath(grepCmd)
-
-	flag1 := "-ir"
-	flag2 := "--line-number"
-
-	cmdOut, err := exec.Command(bin, flag1, flag2, term, path).Output()
-	checkCmd(err)
-
-	return outputLines(cmdOut)
-}
-
-func outputLines(b []byte) []string {
-	return strings.Split(string(b), "\n")
-}
-
-type agLine struct {
+type Line struct {
 	file    string
 	line    string
 	content string
 }
 
-func setTermPath(c *cli.Context) (string, string) {
-	argLen := len(c.Args())
-	var term, path string
-	debug("setTermPath:argLen: %v", argLen)
-	switch argLen {
-	case 0:
-		panic(1)
-	case 1:
-		term = c.Args()[0]
-		path, _ = os.Getwd()
-	case 2:
-		term = c.Args()[0]
-		path = c.Args()[1]
-	default:
-		term = c.Args()[0]
-		path = c.Args()[1]
-	}
-	return term, path
-}
-
-func truncateLine(line string) string {
+func (l *Line) truncatedContent() string {
 	// Lines longer than maxLength are often junk results
+	line := l.content
 	actualContentLen := len(line)
 	maxLength := 200
 	var contentLen int
@@ -128,22 +34,132 @@ func truncateLine(line string) string {
 	return line[:contentLen]
 }
 
-func search(c *cli.Context) {
+func (l *Line) display(s SearchArgs, i int) string {
+	return displayLines(s.term, i, l.line, l.file, l.truncatedContent())
+}
 
-	term, searchPath := setTermPath(c)
+func (l *Line) toString() string {
+	return fmt.Sprint(l.line, " ", l.file, " ", l.truncatedContent(), "\n")
+}
 
-	lines := executeCmd(term, searchPath, c.String("flags"))
+type SearchArgs struct {
+	cmd   string
+	term  string
+	path  string
+	flags []string
+}
 
+func (s *SearchArgs) bin() string {
+	b, err := exec.LookPath(s.cmd)
+	check(err)
+	return b
+}
+
+func executeCmd(s SearchArgs) []string {
+	var debug = Debug("sack:search")
+
+	if _, err := exec.LookPath(ptCmd); err == nil {
+		s.cmd = ptCmd
+	} else if _, err := exec.LookPath(agCmd); err == nil {
+		s.cmd = agCmd
+	} else {
+		s.cmd = grepCmd
+		s.flags = []string{"--ir", "--line-number"}
+	}
+
+	debug("Executing search: %+v", s)
+	return genericSearch(s)
+}
+
+func scanner(dst *[]string, stdout *io.ReadCloser) {
+	reader := bufio.NewReader(*stdout)
+	for {
+		t, err := reader.ReadString('\n')
+		if err == nil {
+			*dst = append(*dst, t)
+		} else if err == io.EOF {
+			break
+		} else {
+			log.Printf("Error is: %v", err)
+			break
+		}
+	}
+}
+
+func cmdAndParse(bin string, ax []string) []string {
+	var dst []string
+
+	cmd := exec.Command(bin, ax...)
+
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	go scanner(&dst, &stdout)
+
+	if err := cmd.Start(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := cmd.Wait(); err != nil {
+		log.Fatal(err)
+	}
+
+	return dst
+}
+
+func genericSearch(a SearchArgs) []string {
+	ax := []string{a.term, a.path}
+	if len(a.flags) != 0 {
+		ax = append(ax, a.flags...)
+	}
+	return cmdAndParse(a.bin(), ax)
+}
+
+func setTermPath(c *cli.Context) SearchArgs {
+	args := c.Args()
+	argLen := len(args)
+	debug("setTermPath:argLen: %v", argLen)
+	switch argLen {
+	case 0:
+		panic(1)
+	case 1:
+		pwd, _ := os.Getwd()
+		return SearchArgs{term: args[0], path: pwd}
+	default:
+		return SearchArgs{term: args[0], path: args[1]}
+	}
+}
+
+func getFlags(fx string) []string {
+	if fx == "" {
+		return []string{}
+	} else {
+		return strings.Split(fx, " ")
+	}
+}
+
+func printer(c chan string) {
+	for {
+		if v, ok := <-c; ok == false {
+			fmt.Println(v)
+			break
+		} else {
+			fmt.Println(v)
+		}
+	}
+}
+
+func displayAndWriteLines(s SearchArgs, lines []string) {
 	if len(lines) == 0 {
-
 		var debug = Debug("sack:search:error")
 		debug("nolines:lines: %v", lines)
-
 		os.Exit(1)
 		return
 	}
 
-	t := []byte(term)
+	t := []byte(s.term)
 	err := ioutil.WriteFile(termPath, t, 0644)
 	check(err)
 
@@ -151,7 +167,11 @@ func search(c *cli.Context) {
 	check(err)
 	defer f.Close()
 
-	fmt.Print(header)
+	c1 := make(chan string)
+
+	go printer(c1)
+
+	c1 <- header
 
 	for i, line := range lines {
 
@@ -159,17 +179,23 @@ func search(c *cli.Context) {
 			break
 		}
 
-		lp := splitLine(line)
+		a, b, c := splitLine(line)
 
-		l := agLine{file: lp[0], line: lp[1], content: truncateLine(lp[2])}
+		l := Line{a, b, c}
 
-		s := displayLines(term, i, l.line, l.file, l.content)
-		fmt.Println(s)
-		o := fmt.Sprint(l.line, " ", l.file, " ", l.content, "\n")
+		c1 <- l.display(s, i)
 
 		w := bufio.NewWriter(f)
-		_, err := w.WriteString(o)
+		_, err := w.WriteString(l.toString())
 		check(err)
 		w.Flush()
 	}
+	close(c1)
+}
+
+func search(c *cli.Context) {
+	s := setTermPath(c)
+	s.flags = getFlags(c.String("flags"))
+	lines := executeCmd(s)
+	displayAndWriteLines(s, lines)
 }

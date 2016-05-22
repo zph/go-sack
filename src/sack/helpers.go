@@ -9,9 +9,9 @@ import (
 
 func checkState() {}
 
-func splitLine(s string) []string {
-	arr := strings.SplitN(s, ":", 3)
-	return arr
+func splitLine(s string) (string, string, string) {
+	a := strings.SplitN(s, ":", 3)
+	return a[0], a[1], a[2]
 }
 
 func check(e error) {
