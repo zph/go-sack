@@ -41,6 +41,7 @@ func ptSearch(term string, path string, flags string) []string {
 }
 
 func genericSearch(cmd string, term string, path string, flags string) []string {
+	var debug = Debug("sack:search")
 	bin := getPath(cmd)
 
 	// Blows up if flags == "" without this conditional
@@ -52,7 +53,6 @@ func genericSearch(cmd string, term string, path string, flags string) []string 
 		cmdOut, err = exec.Command(bin, flags, term, path).Output()
 	}
 
-	var debug = Debug("sack:search")
 	debug("agSearch:bin: %v, flags: %v, term: %v, path: %v", bin, flags, term, path)
 	debug("agSearch:Exec: %v %v %v %v", bin, flags, term, path)
 	debug("agSearch:cmdOut: %v", outputLines(cmdOut))
@@ -96,9 +96,7 @@ type agLine struct {
 
 func setTermPath(c *cli.Context) (string, string) {
 	argLen := len(c.Args())
-	var term string
-	var path string
-	var debug = Debug("sack:search")
+	var term, path string
 	debug("setTermPath:argLen: %v", argLen)
 	switch argLen {
 	case 0:
