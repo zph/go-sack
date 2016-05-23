@@ -40,7 +40,7 @@ func (l *Line) display(s SearchArgs, i int) string {
 }
 
 func (l *Line) toString() string {
-	return fmt.Sprint(l.line, " ", l.file, " ", l.truncatedContent(), "\n")
+	return fmt.Sprint(l.line, " ", l.file, " ", l.truncatedContent())
 }
 
 type SearchArgs struct {
@@ -144,11 +144,11 @@ func getFlags(fx string) []string {
 func printer(c chan string, wg *sync.WaitGroup) {
 	for {
 		if v, ok := <-c; ok == false {
-			fmt.Println(v)
+			fmt.Print(v)
 			wg.Done()
 			break
 		} else {
-			fmt.Println(v)
+			fmt.Print(v)
 		}
 	}
 }
