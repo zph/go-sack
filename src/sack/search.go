@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 )
 
 type Line struct {
@@ -140,10 +141,11 @@ func getFlags(fx string) []string {
 	}
 }
 
-func printer(c chan string) {
+func printer(c chan string, wg *sync.WaitGroup) {
 	for {
 		if v, ok := <-c; ok == false {
 			fmt.Println(v)
+			wg.Done()
 			break
 		} else {
 			fmt.Println(v)
@@ -168,8 +170,10 @@ func displayAndWriteLines(s SearchArgs, lines []string) {
 	defer f.Close()
 
 	c1 := make(chan string)
+	var wg sync.WaitGroup
 
-	go printer(c1)
+	wg.Add(1)
+	go printer(c1, &wg)
 
 	c1 <- header
 
@@ -190,7 +194,10 @@ func displayAndWriteLines(s SearchArgs, lines []string) {
 		check(err)
 		w.Flush()
 	}
+
 	close(c1)
+	// Necessary or some output is lost due to premature exit
+	wg.Wait()
 }
 
 func search(c *cli.Context) {
