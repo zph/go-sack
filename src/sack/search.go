@@ -3,16 +3,20 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/codegangsta/cli"
-	. "github.com/tj/go-debug"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 	"sync"
+
+	"github.com/codegangsta/cli"
+	. "github.com/tj/go-debug"
 )
+
+var lineFeed = regexp.MustCompile("\n+")
 
 type Line struct {
 	file    string
@@ -27,12 +31,11 @@ func (l *Line) truncatedContent() string {
 	maxLength := 200
 	var contentLen int
 	if actualContentLen > maxLength {
-		contentLen = maxLength
-	} else {
 		contentLen = len(line)
+		return line[:contentLen]
 	}
 
-	return line[:contentLen]
+	return lineFeed.ReplaceAllString(line, "")
 }
 
 func (l *Line) display(s SearchArgs, i int) string {
@@ -59,7 +62,10 @@ func (s *SearchArgs) bin() string {
 func executeCmd(s SearchArgs) []string {
 	var debug = Debug("sack:search")
 
-	if _, err := exec.LookPath(ptCmd); err == nil {
+	if _, err := exec.LookPath(rgCmd); err == nil {
+		s.cmd = rgCmd
+		s.flags = []string{"-n"}
+	} else if _, err := exec.LookPath(ptCmd); err == nil {
 		s.cmd = ptCmd
 	} else if _, err := exec.LookPath(agCmd); err == nil {
 		s.cmd = agCmd
@@ -187,10 +193,10 @@ func displayAndWriteLines(s SearchArgs, lines []string) {
 
 		l := Line{a, b, c}
 
-		c1 <- l.display(s, i)
+		c1 <- l.display(s, i) + "\n"
 
 		w := bufio.NewWriter(f)
-		_, err := w.WriteString(l.toString())
+		_, err := w.WriteString(l.toString() + "\n")
 		check(err)
 		w.Flush()
 	}

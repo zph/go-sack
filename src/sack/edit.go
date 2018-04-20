@@ -37,9 +37,7 @@ func edit(c *cli.Context) {
 	plusCmd := fmt.Sprint("+", lineArr[0])
 	plussCmd := []string{"vim", lineArr[1], plusCmd}
 
-	if c.Bool("debug") {
-		fmt.Println("Whole cmd: ", plussCmd, " Index: ", c.Args()[0])
-	}
+	debug("Whole cmd: %v Index: %v", plussCmd, c.Args()[0])
 
 	if true {
 		execErr := syscall.Exec(vimBin, plussCmd, env)

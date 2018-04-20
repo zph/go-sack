@@ -1,15 +1,19 @@
 package main
 
 import (
-	"github.com/wsxiaoys/terminal/color"
 	"os"
 	"path"
+
+	"github.com/wsxiaoys/terminal/color"
 )
 
 var home string = os.Getenv("HOME")
 
+var pwd = os.Getenv("PWD")
+
 const agCmd string = "ag"
 const ptCmd string = "pt"
+const rgCmd string = "rg"
 const grepCmd string = "grep"
 
 var filePath string = path.Join(home, shortcutFilename)

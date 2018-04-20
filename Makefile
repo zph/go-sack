@@ -22,7 +22,7 @@ alias_search:
 	$(sack) -s cmd_non-existent ~/bin
 
 edit: $(sack)
-	$(sack) -e 0
+	$(sack) -e 0 5
 
 print: $(sack)
 	$(sack) -p
